@@ -6,6 +6,12 @@
 
 <!-- Descreva brevemente o repositório -->
 
+## Escopo
+
+Este repositório cobre a **estrutura primária** dos foguetes: corpo, aletas, cone de nariz, acopladores, suportes de motor e demais componentes estruturais.
+
+> **Módulo de recuperação não pertence a este repositório.** O sistema de recuperação é um módulo complexo com repositório próprio: [Serra-Rocketry/recovery](https://github.com/Serra-Rocketry/recovery).
+
 ## Missões
 
 | Missão | Ano | Categoria | Altitude | Status | Link |

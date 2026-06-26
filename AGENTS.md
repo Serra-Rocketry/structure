@@ -4,6 +4,11 @@
 
 Design e análise estrutural de foguetes da Serra Rocketry (IPRJ/UERJ). Cada pasta de missão contém modelos CAD, documentação de design, cálculos estruturais e hardware.
 
+### Escopo
+
+- **Inclui**: estrutura primária (corpo, aletas, cone de nariz, bulkheads, acopladores, motor mount)
+- **Não inclui**: sistema de recuperação — repositório próprio: [recovery](https://github.com/Serra-Rocketry/recovery)
+
 ## Idioma
 
 Todo o conteúdo é escrito em **Português (pt-BR)**. Commits e PRs seguem [Conventional Commits](https://www.conventionalcommits.org/pt-br/): `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`.
