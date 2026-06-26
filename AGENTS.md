@@ -47,3 +47,9 @@ SolidWorks pode ser usado localmente, mas deve exportar para STEP antes de commi
 - **Markdown**: Preservar estilo com emojis nos títulos e back-links `[← Voltar ao índice]`
 - **Commits**: Uma mudança lógica por commit. Mensagens em português.
 - **Sem software de análise**: Scripts Python ou simulações ficam no domínio de Telemetria, não aqui.
+
+## Membros da Equipe
+
+| Domínio | Membro | GitHub | Notas |
+|---------|--------|--------|-------|
+| Aerodinâmica e Estruturas | Pedro | [@PedroSerraRocketry](https://github.com/PedroSerraRocketry) | |
