@@ -1,0 +1,45 @@
+# Design — Cápsula do Altímetro (altimeter-egg)
+
+[← Voltar ao índice](../README.md)
+
+## Objetivo
+
+Proteger o altímetro **Jolly Logic AltimeterTwo** (14.5 × 18 × 49 mm) contra impacto no pouso de foguetes de modelismo. A cápsula é **elipsoidal** (sem cantos vivos) para dissipar impacto; ela **não** pertence ao sistema de recuperação.
+
+## Decisões de Design
+
+### Forma: elipsoide (ovo)
+- Ovo de **80 mm (eixo maior, X)** × **70 mm (seção, Y/Z)**, com o eixo maior alinhado ao comprimento do aparelho (49 mm).
+- Forma arredondada (sem cantos vivos) → boa dissipação de energia no impacto.
+
+### Duas peças com rosca métrica
+| Peça | Função | Rosca |
+|------|--------|-------|
+| **Corpo** | metade do ovo + **colar** de rosca (macho) que, junto com a metade, envolve todo o altímetro | externa |
+| **Tampa** | calota maciça que fecha enroscando | interna (fêmea) |
+
+- O colar é um **tubo com o furo retangular do aparelho atravessando o centro** (o altímetro passa por dentro).
+- A rosca é gerada pela biblioteca `threads.scad` (`ScrewThread`), **métrica, feita para impressão 3D** — filete largo (passo 3 mm) e grosso, fácil de imprimir.
+
+### Encaixe e tolerâncias
+- Folga do encaixe macho/fêmea: **0.35 mm**.
+- A tampa é **maciça** (o aparelho fica todo no corpo + colar), apenas com a cavidade de rosca interna.
+
+### Modelo paramétrico
+- `hardware/cad/altimeter-egg.scad` (OpenSCAD), todos os parâmetros no topo do arquivo (`L`, `D`, `dev_*`, `thl_*`).
+- Modos de visualização: `solid`, `filled`, `corpo`, `tampa`, `assembled`, `split`, `cutaway`, `xray` (transparência via F5).
+
+## Renderização (imagens em `docs/images/`)
+
+| Arquivo | Descrição |
+|---------|-----------|
+| `altimeter_egg_corpo_v1.png` | Corpo (metade + colar de rosca macho) |
+| `altimeter_egg_tampa_v1.png` | Tampa (fêmea) |
+| `altimeter_egg_explodida_v1.png` | Vista explodida (peças afastadas) |
+| `altimeter_egg_montada_v1.png` | Montada (fechada) |
+| `altimeter_egg_xray_v1.png` | Transparência (interior) |
+
+## Próximos passos (sugestões)
+- Validar com o **STL real** do altímetro (substituir a caixa paramétrica por `import("altimeter.stl")` — ativar `show_stl`).
+- Ajustar a folga da rosca a partir do primeiro teste de impressão (ABS, Ender 3).
+- Definir acomodação de cabos/passagem de pressão, se necessário.
