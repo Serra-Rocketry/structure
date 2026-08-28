@@ -33,9 +33,11 @@ altimeter-egg/
 
 ## Recomendação de impressão
 
-- **Filamento**: ABS (Ender 3, 220×220)
+- **Filamento**: TPU 95A (absurdamente resistente ao impacto — ideal para pouso). Evitar 85A/muito mole para a rosca ter corpo.
 - **Infill**: 40–60%
-- **Posição**: as peças ficam dentro da mesa; usar brim se empenar em ABS
+- **Posição**: as peças ficam dentro da mesa; usar brim se empenar
+- **TPU na Ender 3 (Bowden)**: velocidade baixa (~25–30 mm/s), retração baixa ou desligada, hotend ~235–245 °C
+- **Rosca em TPU**: o passo largo (3 mm) já ajuda bastante em material flexível. Se o encaixe "agarrar"/espanar no teste, aumentar `thl_clear` (0.35 → 0.5) ou dar mais voltas (`thl_len`). A rosca fêmea é a peça crítica — imprimir uma amostra antes.
 
 ## Licença
 

@@ -25,6 +25,13 @@ Proteger o altímetro **Jolly Logic AltimeterTwo** (14.5 × 18 × 49 mm) contra 
 - Folga do encaixe macho/fêmea: **0.35 mm**.
 - A tampa é **maciça** (o aparelho fica todo no corpo + colar), apenas com a cavidade de rosca interna.
 
+### Vent hole (entrada de ar / pressão)
+- Furo de **Ø 2 mm** na ponta da **tampa** (eixo X, centro y=z=0) — o AltimeterTwo mede
+  pressão e precisa do ar externo. Atravessa a parede da calota (x=-40 → -27) e abre na
+  cavidade da rosca, comunicando com o interior da cápsula.
+- Parâmetros: `vent_d`, `vent_h`, `vent_x` (para mover para a ponta do corpo, trocar o
+  sinal de `vent_x`).
+
 ### Modelo paramétrico
 - `hardware/cad/altimeter-egg.scad` (OpenSCAD), todos os parâmetros no topo do arquivo (`L`, `D`, `dev_*`, `thl_*`).
 - Modos de visualização: `solid`, `filled`, `corpo`, `tampa`, `assembled`, `split`, `cutaway`, `xray` (transparência via F5).
@@ -38,6 +45,17 @@ Proteger o altímetro **Jolly Logic AltimeterTwo** (14.5 × 18 × 49 mm) contra 
 | `altimeter_egg_explodida_v1.png` | Vista explodida (peças afastadas) |
 | `altimeter_egg_montada_v1.png` | Montada (fechada) |
 | `altimeter_egg_xray_v1.png` | Transparência (interior) |
+| `altimeter_egg_tampa_v2.png` | Tampa com vent hole (ponta em vista frontal) |
+| `altimeter_egg_ventcut_v2.png` | Corte no plano y=0 — túnel do vent hole |
+| `altimeter_egg_techdraw_v1.png` | Desenho técnico (meia-seção + cotas) |
+
+![Cápsula montada](images/altimeter_egg_montada_v1.png)
+![Vista explodida](images/altimeter_egg_explodida_v1.png)
+![Vent hole — corte no plano y=0](images/altimeter_egg_ventcut_v2.png)
+![Vent hole — ponta da tampa](images/altimeter_egg_tampa_v2.png)
+![Desenho técnico (meia-seção)](images/altimeter_egg_techdraw_v1.png)
+
+Desenho técnico **vetorial** (SVG): [`docs/drawings/altimeter_egg_techdraw.svg`](drawings/altimeter_egg_techdraw.svg) — gerado pelo próprio OpenSCAD (`mode="techdraw"`), seção longitudinal com cotas principais (L=80, Ø70, Ø40 da rosca, rosca=27, vent Ø2, parede ≈13).
 
 ## Próximos passos (sugestões)
 - Validar com o **STL real** do altímetro (substituir a caixa paramétrica por `import("altimeter.stl")` — ativar `show_stl`).
