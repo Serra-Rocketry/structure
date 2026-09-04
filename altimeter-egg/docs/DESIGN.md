@@ -57,7 +57,53 @@ Proteger o altímetro **Jolly Logic AltimeterTwo** (14.5 × 18 × 49 mm) contra 
 
 Desenho técnico **vetorial** (SVG): [`docs/drawings/altimeter_egg_techdraw.svg`](drawings/altimeter_egg_techdraw.svg) — gerado pelo próprio OpenSCAD (`mode="techdraw"`), seção longitudinal com cotas principais (L=80, Ø70, Ø40 da rosca, rosca=27, vent Ø2, parede ≈13).
 
+## Voo de validação (Thonyan, 500 m)
+
+> Contexto: a cápsula voou no foguete **Thonyan** (LASC 2026, 0.5 km SRM). Registro feito após o lançamento.
+
+### Ocorrência
+
+- Voo **balístico**: o paraquedas não abriu e o foguete caiu livremente.
+- **Thonyan sofreu major damage.**
+- A cápsula TPU **protegeu o altímetro** — apesar da queda, o AltimeterTwo sobreviveu.
+
+### Danos observados no altímetro
+
+| Componente | Estado |
+|------------|--------|
+| Tela | Quebrada |
+| Conector USB da placa | Solto (sem cabo/tração; não estava conectado) |
+| PCB | Aparentemente OK |
+
+- A borda da cápsula apresenta marcas de impacto (as cascas com vent hole resistiram à deformação do choque).
+
+### Fotos
+
+| Arquivo | Descrição |
+|---------|-----------|
+| `images/altimeter_egg_posvoo_altimetro_frente.jpg` | Altímetro danificado (frente do case) |
+| `images/altimeter_egg_posvoo_altimetro_lateral.jpg` | Altímetro aberto (lado) |
+| `images/altimeter_egg_posvoo_rosca_corpo_tampa.jpg` | Peças TPU com rosca (corpo/tampa) |
+| `images/altimeter_egg_posvoo_cascas_topo.jpg` | Cascas do ovo (topo, com furos) |
+
+![Altímetro danificado — frente](images/altimeter_egg_posvoo_altimetro_frente.jpg)
+![Altímetro danificado — lateral](images/altimeter_egg_posvoo_altimetro_lateral.jpg)
+![Peças TPU com rosca](images/altimeter_egg_posvoo_rosca_corpo_tampa.jpg)
+![Cascas do ovo (topo)](images/altimeter_egg_posvoo_cascas_topo.jpg)
+
+### Lições aprendidas e melhorias
+
+A queda foi um teste de impacto real e mostrou o que precisa evoluir. A direção proposta é a consolidação de **três camadas** (macio → rígido → macio):
+
+1. **TPU egg (externa)** — boa em absorver energia via deformação, mas pouco eficaz em desacoplar o **choque de alta frequência**: deixa o pico de aceleração chegar ao PCB.
+2. **Tubo de metal (intermediário)** — distribui carga pontual, resiste à **onda de choque** e dá uma distância de esmagamento definida (é o que faz o motor sempre sobreviver).
+3. **Espuma macia (interna)** — a camada que realmente protege a eletrônica: transforma o spike de alta frequência em deformação lenta. Sugerida em **meia-casca** (ex.: polietileno reticulado / Plastazote, EPDM/neoprene, célula fechada).
+
+**Atenção (crítico):** o **vent hole deve atravessar todas as camadas** (TPU → furo no tubo de metal → furo na espuma → sensor de pressão). Se a espuma for uma luva fechada, ela bloqueia a equalização de pressão. Por isso a espuma em **meia-casca**, mantendo o canal de ar livre.
+
+> Detalhes adicionais de projeto e iteração serão adicionados depois.
+
 ## Próximos passos (sugestões)
 - Validar com o **STL real** do altímetro (substituir a caixa paramétrica por `import("altimeter.stl")` — ativar `show_stl`).
-- Ajustar a folga da rosca a partir do primeiro teste de impressão (ABS, Ender 3).
+- Ajustar a folga da rosca a partir do primeiro teste de impressão (TPU, Ender 3).
 - Definir acomodação de cabos/passagem de pressão, se necessário.

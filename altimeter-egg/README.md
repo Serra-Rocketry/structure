@@ -4,9 +4,9 @@
 
 ## Sobre
 
-Cápsula protetora **elipsoidal** de duas peças para o altímetro **Jolly Logic AltimeterTwo** (14.5 × 18 × 49 mm, 9.9 g). O exterior em ABS dissipa a energia do impacto, e a peça é fechada por **rosca métrica** (gerada com `threads.scad`, apropriada para impressão 3D).
+Cápsula protetora **elipsoidal** de duas peças para o altímetro **Jolly Logic AltimeterTwo** (14.5 × 18 × 49 mm, 9.9 g). O exterior era previsto em **ABS**; as peças reais impressas voaram em **TPU 95A**, que dissipa a energia do impacto e fecham por **rosca métrica** (gerada com `threads.scad`, apropriada para impressão 3D).
 
-- **Status**: projeto em andamento (design validado em render, pronto para teste de impressão)
+- **Status**: validado em voo (Thonyan, 500 m) — a cápsula TPU protegeu o altímetro numa queda balística; iterando o design (ver [Voo de validação](docs/DESIGN.md#voo-de-validação-thonyan-500-m))
 - **Componente**: proteção de aviônicos (não pertence ao sistema de recuperação)
 
 ## Estrutura

@@ -4,14 +4,14 @@
 
 ## Sobre
 
-Cápsula protetora elipsoidal ("ovo") de duas peças para o altímetro **Jolly Logic AltimeterTwo**. Protege o sensor contra impacto no pouso: o exterior ABS dissipa a energia, e a peça é fechada por rosca métrica.
+Cápsula protetora elipsoidal ("ovo") de duas peças para o altímetro **Jolly Logic AltimeterTwo**. Protege o sensor contra impacto no pouso: o exterior **TPU 95A** dissipa a energia, e a peça é fechada por rosca métrica.
 
 ## Lista de Materiais (BOM)
 
 | Item | Qtd | Especificação | Material |
 |------|-----|---------------|----------|
-| Cápsula — Corpo (metade + colar de rosca) | 1 | Ø40 mm, comprimento 27 mm (colar) | ABS |
-| Cápsula — Tampa | 1 | Ø40 mm, rosca interna | ABS |
+| Cápsula — Corpo (metade + colar de rosca) | 1 | Ø40 mm, comprimento 27 mm (colar) | TPU 95A |
+| Cápsula — Tampa | 1 | Ø40 mm, rosca interna | TPU 95A |
 | Altímetro (referência) | 1 | 14.5 × 18 × 49 mm, 9.9 g | — |
 
 ## Dimensões de Referência (da cápsula)
@@ -26,8 +26,8 @@ Folga do encaixe: 0.35 mm
 
 | Peça | Arquivo | Material | Infill recomendado | Observações |
 |------|---------|----------|--------------------|-------------|
-| Corpo (macho) | `3d_models/altimeter-egg-corpo.3mf` | ABS | 40–60% | Rosca externa métrica (threads.scad) |
-| Tampa (fêmea) | `3d_models/altimeter-egg-tampa.3mf` | ABS | 40–60% | Rosca interna |
+| Corpo (macho) | `3d_models/altimeter-egg-corpo.3mf` | TPU 95A | 40–60% | Rosca externa métrica (threads.scad) |
+| Tampa (fêmea) | `3d_models/altimeter-egg-tampa.3mf` | TPU 95A | 40–60% | Rosca interna |
 
 > O modelo paramétrico está em `cad/altimeter-egg.scad`; roda no OpenSCAD e exporta o `.3mf`. A biblioteca de rosca usada é a `threads.scad` (domínio público / CC0).
 
