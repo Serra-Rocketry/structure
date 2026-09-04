@@ -94,3 +94,20 @@ Uma **tampa** de 500 mm complementa o módulo de recuperação.
 
 - Especificações extraídas do documento SR4-1000 (Pedro — Serra Rocketry)
 - Latin American Space Challenge (LASC) 2026
+
+## Registro de voo — Dédalo (SR4-1000)
+
+> Lançamento do SR4-1000. Recuperação **deployou** (paraquedas abriu), mas **nem o foguete nem o satélite foram recuperados**.
+
+### Resultado
+
+- Recuperação **funcionou**: o paraquedas abriu.
+- **Satélite ejetado** — o mecanismo de ejeção foi acionado.
+- **Foguete: não recuperado** · **Satélite: não recuperado** (ambos pendentes/localização em aberto).
+
+### Observações
+
+- O satélite/payload é de **outro projeto/repositório** — registrado aqui apenas como nota. *(Cross-link a adicionar quando disponível.)*
+- O mecanismo de ejeção (mola, trava, servo) pertence ao repositório [recovery](https://github.com/Serra-Rocketry/recovery).
+
+> Detalhes adicionais do voo (dados de telemetria, fotos, danos) serão adicionados depois.

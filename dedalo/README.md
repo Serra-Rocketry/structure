@@ -37,6 +37,16 @@ SR<foguete>-<apogeu>
 | Motor | SRM (Solid Rocket Motor) |
 | Tipo de recuperação | Ejeção por mola (paraquedas) |
 
+## Status de voo
+
+- [x] Voo realizado
+- [x] Recuperação deployou (paraquedas abriu)
+- [x] Satélite ejetado
+- [ ] Foguete recuperado
+- [ ] Satélite recuperado
+
+> O paraquedas abriu e o satélite foi ejetado, mas **nem o foguete nem o satélite foram recuperados**. Detalhes no [registro de voo](./docs/DESIGN.md#registro-de-voo--dédalo-sr4-1000).
+
 ## Arquitetura Modular
 
 O foguete utiliza um **design modular** para agilizar a integração na área de lançamento e simplificar manutenções.
