@@ -64,6 +64,20 @@ Uma **tampa** de 500 mm complementa o módulo de recuperação.
 - Tubo em fibra de vidro para permitir comunicação por rádio
 - Acomodação para placa de telemetria, altímetro, GPS
 
+#### Acesso ao "Remove Before Flight"
+
+Para passar o *remove before flight* pelo tubo da telemetria é necessário furar a parede do tubo e alcançar o botão de segurança. O procedimento padronizado (validado em campo):
+
+1. Fazer um **furo piloto** em um lado do tubo.
+2. Inserir uma **vareta lisa** até achar a posição do botão — confirmar pela posição e pelo **click** audível.
+3. Verificar o alinhamento pelo *click*.
+4. Com uma **broca longa** (ponta cortante + haste lisa), furar o outro lado alinhado à posição já validada.
+5. Confirmar o acesso pelo *click*.
+
+**Requisito de ferramenta — broca longa:** ponta (broca) na extremidade e **haste lisa** ao longo do restante, para atravessar o tubo sem cortar/desviar as paredes e manter o alinhamento. A equipe precisa **fabricar** essa ferramenta.
+
+> Registrado na issue [fabricar broca longa para acesso ao remove before flight](https://github.com/Serra-Rocketry/structure/issues/7).
+
 ### Módulo 3 — Sistema de Recuperação
 
 - Tubo em fibra de carbono com porta lateral de acesso
@@ -78,6 +92,16 @@ Uma **tampa** de 500 mm complementa o módulo de recuperação.
 
 - Seção de 300 mm para montagem de aletas
 - Contribui para a estabilidade aerodinâmica durante o voo
+
+#### Fixação das aletas
+
+- **Problema observado:** no lançamento, a aleta do Módulo 4 sofreu flexão excessiva e **quase quebrou / estalou**.
+- **Requisito de melhoria:**
+  1. Estrutura impressa em 3D (**fin mount**) para prender a aleta ao tubo — colar melhor a base da aleta e dar mais rigidez.
+  2. Aumentar a **superfície de contato do tubo com a cola** na impressão 3D.
+  3. **Massa/estrutura** para segurar melhor a aleta e suportar melhor a flexão.
+
+> Registrado na issue [melhorar fixação das aletas do Dédalo](https://github.com/Serra-Rocketry/structure/issues/8).
 
 ### Cone de Nariz — Módulo 5
 
