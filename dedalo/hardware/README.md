@@ -57,6 +57,7 @@
 | Peça | Material | Infill recomendado | Observações |
 |------|----------|-------------------|-------------|
 | Cone de nariz | PETG | 20-30% | Formato ogival |
+| Fin mount (fixação das aletas) | A definir | A definir | Aumenta área de contato de cola com o tubo e rigidez à flexão |
 
 ## Dimensões de Referência
 
