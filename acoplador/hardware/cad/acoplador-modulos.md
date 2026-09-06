@@ -18,10 +18,6 @@ Conjunto **montado** (macho laranja translúcido 0.6 + fêmea azul 0.25 rosquead
 
 ![Conjunto montado](media/acoplador-v06c-montado.png) ![Conjunto explodido](media/acoplador-v06c-explodido.png)
 
-Macho translúcido com os 3 tirantes (cinza), mostrando a haste atravessando corpo + espiga até quase o topo da rosca:
-
-![Conjunto v0.6 translúcido](media/acoplador-v06c-translucido.png)
-
 Vista de topo (espiga) e vista de baixo (coroa inferior) — projeções ortográficas reais do STL:
 
 ![Vista de topo](media/acoplador-v06c-vista-topo.png) ![Vista de baixo](media/acoplador-v06c-vista-baixo.png)
