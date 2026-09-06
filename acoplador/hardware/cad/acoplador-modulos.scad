@@ -1,5 +1,5 @@
 // ============================================================================
-// Acoplador de módulos — Dédalo SR4-1000 (v0.6 — rosca passo 30 + tirantes anti-delaminação)
+// Acoplador de módulos — estrutura genérica Serra Rocketry (v0.6 — rosca passo 30 + tirantes anti-delaminação)
 //
 // Dois anéis que se acoplam:
 //   - MACHO: espiga longa com rosca externa, entra quase no comprimento todo

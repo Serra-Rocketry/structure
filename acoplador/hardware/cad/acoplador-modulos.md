@@ -1,4 +1,4 @@
-# Acoplador de módulos — Dédalo SR4-1000 (v0.6)
+# Acoplador de módulos — estrutura genérica Serra Rocketry (v0.6)
 
 Arquivo: `acoplador-modulos.scad` (OpenSCAD paramétrico)
 Status: rascunho validado geometricamente (malha watertight), **medidas ainda chutadas** — ajustar com as medidas reais dos tubos antes de imprimir.
