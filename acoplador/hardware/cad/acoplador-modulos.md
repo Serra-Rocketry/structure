@@ -42,7 +42,7 @@ Se uma camada tenta abrir/separar da vizinha, o parafuso impede o movimento.
 
 ### Por que só no macho?
 
-- A **fêmea** fica inteira colada DENTRO de um tubo — a cola (epóxi ou NVT) em volta do diâmetro externo já segura as camadas entre si. Não precisa de tirante.
+- A **fêmea** fica inteira colada DENTRO de um tubo — a cola epóxi em volta do diâmetro externo já segura as camadas entre si. Não precisa de tirante.
 - O **macho** também tem o corpo colado no tubo A, mas a **espiga rosqueada fica para fora, exposta** — nesse trecho a cola não alcança, e é exatamente ali que a fêmea rosqueia com torque. Os tirantes atravessam corpo + espiga porque a parte crítica é a espiga exposta, sem cola segurando as camadas.
 
 ### Como ficou (detalhes construtivos)
