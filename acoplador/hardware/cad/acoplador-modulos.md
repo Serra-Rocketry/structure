@@ -14,7 +14,11 @@ O encaixe é uma **rosca quadrada própria** (não usa lib de threads): passo 30
 
 ## Imagens (v0.6 final, geradas do STL real — geometria CGAL)
 
-Vista explodida do conjunto com o macho translúcido (laranja) e os 3 tirantes (cinza), mostrando a haste atravessando corpo + espiga até quase o topo da rosca:
+Conjunto **montado** (macho laranja translúcido 0.6 + fêmea azul 0.25 rosqueada por cima) e **explodido** (fêmea separada acima) — dá pra ver a espiga do macho através da fêmea e a rosca em hélice real:
+
+![Conjunto montado](media/acoplador-v06c-montado.png) ![Conjunto explodido](media/acoplador-v06c-explodido.png)
+
+Macho translúcido com os 3 tirantes (cinza), mostrando a haste atravessando corpo + espiga até quase o topo da rosca:
 
 ![Conjunto v0.6 translúcido](media/acoplador-v06c-translucido.png)
 
