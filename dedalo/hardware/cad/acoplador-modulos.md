@@ -12,6 +12,18 @@ Acoplador entre módulos do foguete (tubos de ~ID 100 mm). Duas peças:
 
 O encaixe é uma **rosca quadrada própria** (não usa lib de threads): passo 30 mm, 2 voltas inteiras, ângulo de hélice ~5,8° (visual de "parafuso", escolha do Angelo), filete com 2,5 mm de profundidade.
 
+## Imagens (v0.6 final, geradas do STL real — geometria CGAL)
+
+Vista explodida do conjunto com o macho translúcido (laranja) e os 3 tirantes (cinza), mostrando a haste atravessando corpo + espiga até quase o topo da rosca:
+
+![Conjunto v0.6 translúcido](media/acoplador-v06c-translucido.png)
+
+Vista de topo (espiga) e vista de baixo (coroa inferior) — projeções ortográficas reais do STL:
+
+![Vista de topo](media/acoplador-v06c-vista-topo.png) ![Vista de baixo](media/acoplador-v06c-vista-baixo.png)
+
+> Nota: preview rápido do OpenSCAD (~1 s) NÃO mostra a rosca direito (parece anéis); essas imagens foram geradas do STL exportado (CGAL). O olho humano decide o visual.
+
 ---
 
 ## POR QUE OS TIRANTES (parafusos longitudinais)
