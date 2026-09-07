@@ -1,4 +1,4 @@
-# Acoplador de módulos — estrutura genérica Serra Rocketry (v0.6)
+# Acoplador de módulos — estrutura genérica Serra Rocketry (v0.7)
 
 Arquivo: `acoplador-modulos.scad` (OpenSCAD paramétrico)
 Status: rascunho validado geometricamente (malha watertight), **medidas ainda chutadas** — ajustar com as medidas reais dos tubos antes de imprimir.
@@ -12,15 +12,27 @@ Acoplador entre módulos do foguete (tubos de ~ID 100 mm). Duas peças:
 
 O encaixe é uma **rosca quadrada própria** (não usa lib de threads): passo 30 mm, 2 voltas inteiras, ângulo de hélice ~5,8° (visual de "parafuso", escolha do Angelo), filete com 2,5 mm de profundidade.
 
-## Imagens (v0.6 final, geradas do STL real — geometria CGAL)
+Desde a v0.7 as duas peças têm um **lábio de batente de colagem** na boca (ver seção abaixo).
 
-Conjunto **montado** (macho laranja translúcido 0.6 + fêmea azul 0.25 rosqueada por cima) e **explodido** (fêmea separada acima) — dá pra ver a espiga do macho através da fêmea e a rosca em hélice real:
+## Lábio de batente de colagem (v0.7)
 
-![Conjunto montado](media/acoplador-v06c-montado.png) ![Conjunto explodido](media/acoplador-v06c-explodido.png)
+Cada peça tem um anel fino na borda que fica na boca do tubo quando colada — serve de batente: na hora de colar, o tubo encosta no lábio e **não deixa a peça entrar demais** (a profundidade de colagem fica definida e igual nas duas pontas).
 
-Vista de topo (espiga) e vista de baixo (coroa inferior) — projeções ortográficas reais do STL:
+- **Macho**: anel na borda superior do corpo, no ombro onde a espiga nasce (os últimos `labio_esp` mm do corpo têm OD maior). O tubo A encosta aí quando o corpo está todo dentro.
+- **Fêmea**: anel na boca do recesso (face z=0). O tubo B encosta aí com a boca alinhada à face que recebe o macho.
+- **Geometria**: anel de espessura axial `labio_esp` = 1 mm (paramétrico; 0,4 mm é o mínimo de 1 parede FDM) e OD `labio_od` = 103,6 mm — OD do tubo (ID 100 + parede 2 mm, medida real) menos 0,4 de folga, para ficar **flush por fora** (nunca passar do OD do tubo).
+- Parâmetros: `labio_on` (liga/desliga), `labio_esp`, `tubo_id`, `tubo_parede` (= 2, real), `labio_od`.
+- Na montagem os dois lábios se encontram na junta (ombro z=60) e formam um colar contínuo de ~2 mm com o OD do tubo — a junta fica limpa por fora.
 
-![Vista de topo](media/acoplador-v06c-vista-topo.png) ![Vista de baixo](media/acoplador-v06c-vista-baixo.png)
+## Imagens (v0.7, geradas do STL real — geometria CGAL)
+
+Conjunto **montado** (macho laranja translúcido + fêmea azul rosqueada por cima) e **explodido** (fêmea separada acima) — dá pra ver a espiga do macho através da fêmea, a rosca em hélice real e os lábios de batente na junta:
+
+![Conjunto montado](media/acoplador-v07-montado.png) ![Conjunto explodido](media/acoplador-v07-explodido.png)
+
+Vista de topo (espiga; o anel externo Ø103,6 é o lábio no ombro) e vista de baixo (coroa inferior, com os bosses/furos dos tirantes a 120°) — renders ortográficos do STL real:
+
+![Vista de topo](media/acoplador-v07-vista-topo.png) ![Vista de baixo](media/acoplador-v07-vista-baixo.png)
 
 > Nota: preview rápido do OpenSCAD (~1 s) NÃO mostra a rosca direito (parece anéis); essas imagens foram geradas do STL exportado (CGAL). O olho humano decide o visual.
 
@@ -83,14 +95,14 @@ Nota M5: o rebaixo da cabeça (Ø 8,5 + folga) fica no limite do boss da espiga 
 - **v0.3**: rosca quadrada própria (linear_extrude + twist). Perfil quadrado é melhor p/ FDM (flanco 90° aguenta mais carga e delamina menos que V fino). Passo 8 mm, 7 voltas.
 - **v0.4**: passo 16 mm (ângulo mais visível), 4 voltas.
 - **v0.5**: passo 30 mm com 2 voltas (decisão do Angelo: ângulo maior, poucas voltas), filete 2,5 mm.
-- **v0.6**: tirantes anti-delaminação (esta versão).
+- **v0.6**: tirantes anti-delaminação (esta versão). Furo interno 84→80.
+- **v0.7**: lábio de batente de colagem no macho (ombro) e na fêmea (boca do recesso); parede do tubo confirmada = 2 mm (ID 100 / OD 104).
 
 ## Pendências
 
-- [ ] Medir os tubos reais e ajustar: OD 99,6 (hoje hipótese p/ tubo ID 100), comprimentos de colagem.
+- [ ] Medir os tubos reais e ajustar: OD 99,6 (hoje hipótese p/ tubo ID 100 — folga de cola), comprimentos de colagem.
 - [ ] Furos para inserts de latão (#10) — provavelmente na fêmea/flanges.
 - [ ] Decidir M3 vs M4/M5 para o tirante (dependente da carga real estimada).
-- [ ] Push do commit local (aguardando OK do Angelo — repo público da org).
 
 ## Ferramentas / como validar
 

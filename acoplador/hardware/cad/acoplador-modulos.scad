@@ -1,5 +1,5 @@
 // ============================================================================
-// Acoplador de módulos — estrutura genérica Serra Rocketry (v0.6 — rosca passo 30 + tirantes anti-delaminação)
+// Acoplador de módulos — estrutura genérica Serra Rocketry (v0.7 — rosca passo 30 + tirantes + lábio de colagem)
 //
 // Dois anéis que se acoplam:
 //   - MACHO: espiga longa com rosca externa, entra quase no comprimento todo
@@ -32,6 +32,12 @@
 //     fêmea desrosqueada. Tamanho é PARÂMETRO: parafuso_m = 3/4/5 (M3/M4/M5).
 //     Furo interno 84→80 p/ dar parede (9.8mm) e reforçar a rosca.
 //     Detalhes e motivação: ver acoplador-modulos.md
+//   - v0.7: LÁBIO de batente de colagem (Angelo: "colocar um lábio bem fino,
+//     p/ não entrar demais, na fêmea e no macho, p/ ajudar na hora de
+//     colar"). Anel axial fino (labio_esp = 1mm; 0.4 possível) na borda
+//     superior do corpo no ombro (macho) e na boca do recesso z=0 (fêmea).
+//     OD do anel ≈ OD do tubo (103.6; tubo real ID 100/parede 2 = OD 104) →
+//     flush por fora; o tubo encosta e trava a profundidade de colagem.
 // ============================================================================
 
 // ---------- CONFIG (editar aqui) ----------
@@ -42,6 +48,21 @@ furo_interno = 80;   // furo interno contínuo [mm] — passagem; v0.6: 84→80 
                      // (9.8mm) pros tirantes M3 e reforçar a rosca (raiz Ø89 → parede 4.5mm)
 comp_macho   = 60;   // corpo do macho (região que fica colada no tubo A) [mm]
 comp_femea   = 64;   // corpo da fêmea (região que fica colada no tubo B) [mm] — 60 recesso + 4 parede
+
+// ---------- Lábio de batente de colagem (v0.7) ----------
+// Anel fino na boca de cada peça: na hora de colar, o tubo encosta no lábio
+// e NÃO deixa a peça entrar demais (profundidade de colagem definida).
+// Posição (confirmada c/ Angelo): MACHO — borda superior do corpo, no ombro
+// (o tubo A termina aí); FÊMEA — boca do recesso, face z=0 (o tubo B termina).
+// OD vai até perto do OD do tubo → fica flush por fora, invisível.
+// labio_esp é o "bem fino" (0.4 possível); Angelo: default 1.
+labio_on      = true;   // false p/ voltar ao v0.6 (sem lábio)
+labio_esp     = 1.0;    // espessura AXIAL do anel [mm] (0.4 = 1 parede, frágil)
+tubo_id       = 100;    // ID do tubo [mm] (folga de cola vs OD da peça 99.6)
+tubo_parede   = 2.0;    // parede do tubo [mm] — REAL (Angelo, 2026-09-06)
+tubo_od       = tubo_id + 2 * tubo_parede;  // OD do tubo [mm] (= 104)
+labio_od      = tubo_od - 0.4;  // OD do lábio [mm] (103.6) — flush com o tubo
+                                // menos folga p/ nunca passar do OD real
 
 // Tirantes anti-delaminação (SÓ no macho) — ver histórico v0.6 no topo
 // 3 bosses (protuberâncias suaves) na parede INTERNA, a 120°, do corpo até
@@ -187,6 +208,13 @@ module macho() {
             // corpo (cola no tubo A)
             anel(od_peca, furo_interno, comp_macho);
 
+            // Lábio de batente: engrossa a borda superior do corpo no ombro
+            // (z = comp_macho-labio_esp .. comp_macho). O tubo A encosta aqui
+            // e trava a profundidade de colagem; anel fica flush com o tubo.
+            if (labio_on)
+                translate([0, 0, comp_macho - labio_esp])
+                    anel(labio_od, od_peca - 0.4, labio_esp);
+
             // 3 bosses no CORPO (parede interna, a 120°) — engrossam p/ dentro
             // e dão material ao redor do furo do tirante na região colada.
             for (i = [0:parafuso_n - 1]) {
@@ -264,7 +292,13 @@ module femea() {
         raio_crista_f = rosca_od / 2 + rosca_tol;   // fundo da ranhura interna
         raio_raiz_f   = rosca_id / 2 - rosca_tol;   // topo do filete interno
         difference() {
-            anel(od_peca, furo_interno, comp_femea);
+            union() {
+                anel(od_peca, furo_interno, comp_femea);
+                // Lábio de batente na boca do recesso (z=0..labio_esp): o
+                // tubo B encosta aqui e trava a profundidade de colagem.
+                if (labio_on)
+                    anel(labio_od, od_peca - 0.4, labio_esp);
+            }
             translate([0, 0, -0.01])
                 cilindro_roscado(raio_crista_f, raio_raiz_f,
                                  recesso_prof, passo_rosca, larg_groove);
