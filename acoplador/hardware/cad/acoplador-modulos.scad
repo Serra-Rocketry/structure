@@ -1,5 +1,5 @@
 // ============================================================================
-// Acoplador de módulos — estrutura genérica Serra Rocketry (v0.8 — rosca passo 30 + tirantes + lábio + chanfro de guia)
+// Acoplador de módulos — estrutura genérica Serra Rocketry (v0.9 — rosca V 60° + encaixe corrigido)
 //
 // Dois anéis que se acoplam:
 //   - MACHO: espiga longa com rosca externa, entra quase no comprimento todo
@@ -43,6 +43,26 @@
 //     fêmea, parte interna"). No MACHO: aresta externa do topo da espiga
 //     (ponta entra afunilada); na FÊMEA: aresta interna da boca do recesso
 //     (boca de sino). Tamanho paramétrico: chanfro_rosca = 2mm (45°).
+//   - v0.9: PERFIL V 60° + ENCAIXE CORRIGIDO. (a) Angelo: perfil quadrado
+//     (flanco 90°) é difícil de imprimir — flanco vira V 60° total (30° da
+//     radial, rosca_ang_flank). (b) DESCOBERTA: desde o v0.3 o dente (55% do
+//     passo) era MAIOR que o vão (45%) — par impossível de rosquear (renders
+//     "montado" se intersectavam; nunca houve checagem de interferência).
+//     Rebalanceado: vão 15.5 / dente 14.5 no raio médio (larg_groove 0.5167
+//     do passo). (c) raio_raiz_f estava com SINAL ERRADO (−tol): fêmea com
+//     dente alcançando DENTRO do raio do macho → agora +tol (folga radial
+//     nos dois raios), e com o flanco V a folga radial vira folga axial de
+//     flanco (~0.5mm). Validação nova: interferência/clearance entre o par.
+//   - v0.9 (cont.): (d) malha do V inicial saiu FRAGMENTADA (7 comps) — slivers
+//     de volume zero na junção flanco inclinado→núcleo. Fix: piso plano no
+//     fundo do vão (rosca_fundo_flat, 0.3mm) — junção vira parede radial como
+//     na v0.8, malha fecha limpa, e ainda evita ponta V na raiz (imprime
+//     melhor). (e) folga axial no fundo do recesso (fundo_extra = 1mm de furo
+//     liso Ø90): a fêmea assenta no ombro sem a ponta da espiga encostar no
+//     fundo (recesso continua 2 voltas inteiras p/ o twist fechar). (f)
+//     validação final por proximidade de malha na posição montada: sem
+//     penetração; distância mínima 0.206mm = folga projetada da ponta do
+//     dente da fêmea (r=45.0) ao início do flanco do macho (r=44.8).
 // ============================================================================
 
 // ---------- CONFIG (editar aqui) ----------
@@ -114,11 +134,28 @@ espiga_comp  = voltas_rosca * passo_rosca;  // comprimento rosqueado [mm]
 rosca_od     = 94;    // diâmetro de crista da rosca macho [mm]
 rosca_prof   = 2.5;   // profundidade radial do filete [mm]
 rosca_id     = rosca_od - 2 * rosca_prof;  // diâmetro de raiz (derivado) [mm]
-larg_groove  = passo_rosca * 0.45;  // largura axial do vão (groove) [mm]
-rosca_tol    = 0.4;   // folga radial p/ rosquear [mm]
-recesso_prof = espiga_comp;  // profundidade da rosca interna na fêmea [mm]
-                             // (60 de 64 do corpo — 4 mm de parede no fundo)
+// v0.9: VÃO (largura axial do groove no RAIO MÉDIO) = 15.5 → DENTE 14.5.
+// Antes era 0.45×passo = 13.5 (dente 16.5 > vão 13.5 = IMPOSSÍVEL de rosquear).
+larg_groove  = passo_rosca * 0.5167;  // vão no raio médio [mm] (=15.5)
+rosca_ang_flank = 30;  // flanco [graus] da radial: 0 = quadrada (v0.8),
+                       // 30 = V 60° total (v0.9). V dá folga de flanco com a
+                       // folga radial e imprime melhor que parede a 90°.
+rosca_tol    = 0.5;   // folga radial do par [mm] (era 0.4). Com flanco V 30°,
+                       // vira ~0.5mm de folga axial por flanco (folga FDM típica).
+rosca_fundo_flat = 0.3; // piso plano no fundo do vão [mm] — evita ponta V na
+                        // raiz (imprime melhor) e mantém a junção flanco→piso
+                        // radial, que fecha malha sem slivers. 0.3 (era 0.5):
+                        // 0.5 fazia o flanco começar em r=45.0 = raio da ponta
+                        // do dente da fêmea (contato linha a linha)
+recesso_prof = espiga_comp;  // profundidade ROSQUEADA da fêmea [mm]
+                             // (= 60 = 2 voltas inteiras — twist fecha). A
+                             // FOLGA AXIAL de 1mm fica num prolongamento de
+                             // furo liso Ø90 no fundo (fundo_extra abaixo),
+                             // p/ a ponta da espiga não encostar no fundo.
 fn_rosca     = 144;   // segmentos do círculo da rosca
+fundo_extra  = 1;     // folga axial no fundo do recesso [mm]: prolongamento
+                      // de furo liso Ø90 além da rosca — a espiga (2 voltas =
+                      // 60mm) assenta sem a ponta encostar no fundo
 
 // Chanfro de guia (v0.8) — 45° nas duas pontas, p/ facilitar encontro/inserção
 chanfro_on    = true;  // false p/ desligar (v0.7)
@@ -182,31 +219,68 @@ module anel(od, id, h) {
 // groove_ax    : largura axial da ranhura helicoidal [mm] (< passo)
 // ---------------------------------------------------------------------------
 
-// Amostra um arco de raio r entre a0..a1 (graus) em n segmentos
+// Amostra um arco de raio r entre a0..a1 (graus) em n segmentos — devolve
+// n pontos SEM o ponto final (o próximo trecho começa onde este terminou).
 function pts_arco(r, a0, a1, n) = [
-    for (i = [0:n])
+    for (i = [0:n - 1])
         let(a = a0 + (a1 - a0) * i / n)
             [r * cos(a), r * sin(a)]
 ];
 
+// Amostra a parede do FLANCO de (r0,a0) até (r1,a1) com θ linear em r:
+// o flanco 3D (depois do twist) fica com inclinação constante (perfil V reto).
+// Devolve n pontos SEM o ponto final (junção sem duplicata).
+function pts_flank(r0, a0, r1, a1, n) = [
+    for (i = [0:n - 1])
+        let(t = i / n,
+            r = r0 + (r1 - r0) * t,
+            a = a0 + (a1 - a0) * t)
+            [r * cos(a), r * sin(a)]
+];
+
 module cilindro_roscado(raio_crista, raio_raiz, alt, passo, groove_ax) {
-    ang_groove = 360 * groove_ax / passo;  // ângulo do setor removido
-    voltas     = alt / passo;
-    slices     = ceil(voltas) * 36;  // 36 fatias por volta (~10°) — fechamento ok
+    // Perfil do filete (v0.9): flanco inclinado `rosca_ang_flank`° da radial
+    // (0 = quadrado; 30 = V 60° total). O vão tem `groove_ax` de largura
+    // AXIAL no RAIO MÉDIO; com o flanco inclinado ele alarga na crista e
+    // estreita na raiz (dente trapezoidal: mais fino em cima, mais grosso na
+    // base — imprime sem parede a 90°). O vão tem PISO PLANO na raiz
+    // (`rosca_fundo_flat`): evita ponta V no fundo (melhor p/ FDM e
+    // resistência) e mantém a junção flanco→piso radial (malha sem slivers).
+    ang_flank = rosca_ang_flank;
+    d_r   = raio_crista - raio_raiz;              // profundidade radial
+    raio_m = (raio_crista + raio_raiz) / 2;       // raio médio (largura = groove_ax)
+    ang_m = 360 * groove_ax / passo;              // largura angular do vão no raio médio
+    // variação angular de cada flanco da raiz → crista (largura do vão cresce 2×)
+    d_ang = d_r * tan(ang_flank) * 360 / passo;
+    // limites angulares do vão (centrado em ang_m/2), na crista e na raiz
+    aC0 = ang_m / 2 - (ang_m + d_ang) / 2;   // crista: início do vão (pode ser <0)
+    aC1 = ang_m / 2 + (ang_m + d_ang) / 2;   // crista: fim do vão
+    flat  = rosca_fundo_flat;                // piso plano do vão (na raiz)
+    rf    = raio_raiz + flat;                // raio onde o flanco termina (acima do piso)
+    shift = d_ang * (1 - flat / d_r);        // deslocamento angular do flanco até o piso
+    aLf   = aC0 + shift;                     // lado baixo do vão no fim do flanco
+    aHf   = aC1 - shift;                     // lado alto do vão no fim do flanco
+    voltas = alt / passo;
+    slices = ceil(voltas) * 36;  // 36 fatias por volta (~10°) — fechamento ok
 
-    // amostragem dos arcos: ~3° (segmento ≈ 2.5 mm no Ø94)
-    n_ext = max(8, ceil((360 - ang_groove) / 3));
-    n_int = max(8, ceil(ang_groove / 3));
+    // amostragem ~3° nos arcos do corpo (crista/piso) e ~0.4mm nas paredes
+    n_ext   = max(8, ceil((aC0 + 360 - aC1) / 3));
+    n_floor = max(8, ceil((aHf - aLf) / 3));
+    n_w     = max(4, ceil((d_r - flat) / 0.4));
 
+    // Laço único (CCW): corpo na crista → flanco inclinado desce → parede
+    // radial até o piso → piso (arco na raiz) → parede radial sobe → flanco
+    // inclinado sobe → fecha. As paredes radiais do piso seguem o padrão da
+    // rosca quadrada (v0.8), que fecha malha sem slivers.
     secao_pts = concat(
-        // arco externo (crista) do fim da ranhura até 360°
-        pts_arco(raio_crista, ang_groove, 360, n_ext),
-        // desce no raio 0°/360° até a raiz
-        [[raio_raiz * cos(360), raio_raiz * sin(360)]],
-        // arco interno (raiz) de 0° até o fim da ranhura
-        pts_arco(raio_raiz, 0, ang_groove, n_int),
-        // sobe no raio ang_groove até a crista (fecha o laço)
-        [[raio_crista * cos(ang_groove), raio_crista * sin(ang_groove)]]
+        pts_arco(raio_crista, aC1, aC0 + 360, n_ext),
+        pts_flank(raio_crista, aC0 + 360, rf, aLf + 360, n_w),
+        [[rf * cos(aLf + 360), rf * sin(aLf + 360)],
+         [raio_raiz * cos(aLf + 360), raio_raiz * sin(aLf + 360)]],
+        pts_arco(raio_raiz, aLf + 360, aHf + 360, n_floor),
+        [[raio_raiz * cos(aHf + 360), raio_raiz * sin(aHf + 360)],
+         [rf * cos(aHf + 360), rf * sin(aHf + 360)]],
+        pts_flank(rf, aHf + 360, raio_crista, aC1 + 360, n_w)
     );
 
     linear_extrude(height = alt, twist = voltas * 360, slices = slices,
@@ -332,8 +406,11 @@ module femea() {
         // Boca (base, virada p/ baixo) com rosca interna:
         // subtrai o mesmo cilindro rosqueado, alargado pela folga radial.
         // (o cilindro cobre o centro — o anel já é vazado no furo_interno)
-        raio_crista_f = rosca_od / 2 + rosca_tol;   // fundo da ranhura interna
-        raio_raiz_f   = rosca_id / 2 - rosca_tol;   // topo do filete interno
+        raio_crista_f = rosca_od / 2 + rosca_tol;   // crista interna: crista do macho + folga
+        raio_raiz_f   = rosca_id / 2 + rosca_tol;   // raiz interna: raiz do macho + folga
+        // (v0.9) raio_raiz_f era −tol (dente da fêmea alcançava DENTRO do raiz
+        // do macho → par não rosqueava). Com +tol nos DOIS raios + flanco V,
+        // a folga radial vira folga axial de flanco de ~0.5mm.
         difference() {
             union() {
                 anel(od_peca, furo_interno, comp_femea);
@@ -345,6 +422,11 @@ module femea() {
             translate([0, 0, -0.01])
                 cilindro_roscado(raio_crista_f, raio_raiz_f,
                                  recesso_prof, passo_rosca, larg_groove);
+            // Prolongamento liso do furo no fundo (folga axial p/ ponta da
+            // espiga — v0.9): Ø90 contínuo com a rosca, +fundo_extra de fundo
+            translate([0, 0, recesso_prof - 0.01])
+                cylinder(d = rosca_id + 2 * rosca_tol,
+                         h = fundo_extra + 0.02, $fn = $fn_res);
             // Chanfro de guia na boca do recesso (z=0, aresta interna)
             if (chanfro_on)
                 chanfro_boca_femea();
