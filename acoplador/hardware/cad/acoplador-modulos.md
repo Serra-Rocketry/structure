@@ -1,4 +1,4 @@
-# Acoplador de módulos — estrutura genérica Serra Rocketry (v0.7)
+# Acoplador de módulos — estrutura genérica Serra Rocketry (v0.8)
 
 Arquivo: `acoplador-modulos.scad` (OpenSCAD paramétrico)
 Status: rascunho validado geometricamente (malha watertight), **medidas ainda chutadas** — ajustar com as medidas reais dos tubos antes de imprimir.
@@ -24,15 +24,28 @@ Cada peça tem um anel fino na borda que fica na boca do tubo quando colada — 
 - Parâmetros: `labio_on` (liga/desliga), `labio_esp`, `tubo_id`, `tubo_parede` (= 2, real), `labio_od`.
 - Na montagem os dois lábios se encontram na junta (ombro z=60) e formam um colar contínuo de ~2 mm com o OD do tubo — a junta fica limpa por fora.
 
-## Imagens (v0.7, geradas do STL real — geometria CGAL)
+## Chanfro de guia na rosca (v0.8)
 
-Conjunto **montado** (macho laranja translúcido + fêmea azul rosqueada por cima) e **explodido** (fêmea separada acima) — dá pra ver a espiga do macho através da fêmea, a rosca em hélice real e os lábios de batente na junta:
+Para **facilitar o encontro e a inserção** na hora de encaixar (pedido do Angelo: "um filete no topo da rosca, parte externa, e na parte de baixo da fêmea, parte interna"):
 
-![Conjunto montado](media/acoplador-v07-montado.png) ![Conjunto explodido](media/acoplador-v07-explodido.png)
+- **Macho**: chanfro de 45° na aresta externa do **topo da rosca** (ponta da espiga, por onde ela entra) — a crista chega afunilada (Ø94 → Ø90 na face da ponta), então o começo da rosca não "pega" torto na entrada.
+- **Fêmea**: chanfro de 45° na aresta interna da **boca do recesso** (z=0, a parte de baixo) — alarga a entrada (boca de sino, Ø94,8 → Ø98,8 na face) e guia a espiga pro centro.
+- Parâmetros: `chanfro_on` (liga/desliga) e `chanfro_rosca` = 2 mm (45°).
+- ⚠️ Na fêmea o chanfro não pode passar da parede da boca (2,4 mm sem lábio; com lábio o aro continua com ~2,4 mm).
 
-Vista de topo (espiga; o anel externo Ø103,6 é o lábio no ombro) e vista de baixo (coroa inferior, com os bosses/furos dos tirantes a 120°) — renders ortográficos do STL real:
+## Imagens (v0.8, geradas do STL real — geometria CGAL)
 
-![Vista de topo](media/acoplador-v07-vista-topo.png) ![Vista de baixo](media/acoplador-v07-vista-baixo.png)
+Conjunto **montado** (macho laranja translúcido + fêmea azul rosqueada por cima) e **explodido** (fêmea separada acima) — dá pra ver a espiga do macho através da fêmea, a rosca em hélice real, os lábios de batente na junta e o chanfro na ponta do macho:
+
+![Conjunto montado](media/acoplador-v08-montado.png) ![Conjunto explodido](media/acoplador-v08-explodido.png)
+
+Detalhes do chanfro de guia — ponta do macho (bisel 45° na aresta do topo) e boca da fêmea (boca de sino na entrada do recesso):
+
+![Detalhe ponta do macho](media/acoplador-v08-detalhe-ponta.png) ![Detalhe boca da fêmea](media/acoplador-v08-detalhe-boca.png)
+
+Vista de topo (espiga chanfrada) e vista de baixo (coroa inferior, com os bosses/furos dos tirantes a 120°) — renders ortográficos do STL real:
+
+![Vista de topo](media/acoplador-v08-vista-topo.png) ![Vista de baixo](media/acoplador-v08-vista-baixo.png)
 
 > Nota: preview rápido do OpenSCAD (~1 s) NÃO mostra a rosca direito (parece anéis); essas imagens foram geradas do STL exportado (CGAL). O olho humano decide o visual.
 
@@ -97,6 +110,7 @@ Nota M5: o rebaixo da cabeça (Ø 8,5 + folga) fica no limite do boss da espiga 
 - **v0.5**: passo 30 mm com 2 voltas (decisão do Angelo: ângulo maior, poucas voltas), filete 2,5 mm.
 - **v0.6**: tirantes anti-delaminação (esta versão). Furo interno 84→80.
 - **v0.7**: lábio de batente de colagem no macho (ombro) e na fêmea (boca do recesso); parede do tubo confirmada = 2 mm (ID 100 / OD 104).
+- **v0.8**: chanfro de guia 45° (2 mm paramétrico) no topo da rosca do macho (ponta da espiga) e na boca do recesso da fêmea (boca de sino) — facilita encontro/inserção.
 
 ## Pendências
 

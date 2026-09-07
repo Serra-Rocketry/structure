@@ -1,5 +1,5 @@
 // ============================================================================
-// Acoplador de módulos — estrutura genérica Serra Rocketry (v0.7 — rosca passo 30 + tirantes + lábio de colagem)
+// Acoplador de módulos — estrutura genérica Serra Rocketry (v0.8 — rosca passo 30 + tirantes + lábio + chanfro de guia)
 //
 // Dois anéis que se acoplam:
 //   - MACHO: espiga longa com rosca externa, entra quase no comprimento todo
@@ -38,6 +38,11 @@
 //     superior do corpo no ombro (macho) e na boca do recesso z=0 (fêmea).
 //     OD do anel ≈ OD do tubo (103.6; tubo real ID 100/parede 2 = OD 104) →
 //     flush por fora; o tubo encosta e trava a profundidade de colagem.
+//   - v0.8: CHANFRO de guia 45° p/ facilitar o encontro/inserção (Angelo:
+//     "um filete no topo da rosca, parte externa, e na parte de baixo da
+//     fêmea, parte interna"). No MACHO: aresta externa do topo da espiga
+//     (ponta entra afunilada); na FÊMEA: aresta interna da boca do recesso
+//     (boca de sino). Tamanho paramétrico: chanfro_rosca = 2mm (45°).
 // ============================================================================
 
 // ---------- CONFIG (editar aqui) ----------
@@ -114,6 +119,13 @@ rosca_tol    = 0.4;   // folga radial p/ rosquear [mm]
 recesso_prof = espiga_comp;  // profundidade da rosca interna na fêmea [mm]
                              // (60 de 64 do corpo — 4 mm de parede no fundo)
 fn_rosca     = 144;   // segmentos do círculo da rosca
+
+// Chanfro de guia (v0.8) — 45° nas duas pontas, p/ facilitar encontro/inserção
+chanfro_on    = true;  // false p/ desligar (v0.7)
+chanfro_rosca = 2.0;   // chanfro 45° [mm]: topo da rosca do macho (aresta
+                       // externa da ponta) + boca do recesso da fêmea (aresta
+                       // interna, z=0). ⚠️ na fêmea não passar da parede da
+                       // boca (2.4mm sem lábio; com lábio vira 2.4 no aro).
 
 // Visualização
 exploded      = true;  // true: peças separadas no eixo Z
@@ -252,6 +264,10 @@ module macho() {
 
         // Furos dos tirantes atravessam corpo + espiga (até margem_topo do topo)
         tirantes_macho();
+
+        // Chanfro de guia no topo da rosca (ponta da espiga)
+        if (chanfro_on)
+            chanfro_topo_espiga();
     }
 }
 
@@ -284,6 +300,33 @@ module tirantes_macho() {
     }
 }
 
+// Chanfro de guia 45° no TOPO da rosca do macho (ponta da espiga) — remove a
+// aresta externa da ponta num cone de chanfro_rosca mm: a crista chega
+// afunilada na entrada da fêmea, facilitando o encontro/inserção.
+// Cutter = cilindro externo (R+ε) MENOS cone (R na base → R−s no topo) →
+// sobra a cunha anelar 45° que é subtraída da ponta.
+module chanfro_topo_espiga() {
+    s      = chanfro_rosca;
+    R      = rosca_od / 2;                // crista da rosca macho
+    z_topo = comp_macho + espiga_comp;    // topo da espiga (120)
+    translate([0, 0, z_topo - s])
+        difference() {
+            cylinder(d = 2 * R + 0.2, h = s + 0.2, $fn = $fn_res);
+            cylinder(d1 = 2 * R, d2 = 2 * (R - s), h = s, $fn = $fn_res);
+        }
+}
+
+// Chanfro de guia 45° na BOCA do recesso da fêmea (z=0, aresta INTERNA) —
+// alarga a entrada (boca de sino) p/ o macho encontrar o furo com folga.
+// Cutter = cone (Ø alargado na face → Ø da crista interna em chanfro_rosca).
+module chanfro_boca_femea() {
+    s     = chanfro_rosca;
+    R_int = rosca_od / 2 + rosca_tol;   // crista da rosca INTERNA (fêmea)
+    translate([0, 0, -0.05])
+        cylinder(d1 = 2 * (R_int + s), d2 = 2 * R_int,
+                 h = s + 0.05, $fn = $fn_res);
+}
+
 module femea() {
     if (tipo_encaixe == "rosca") {
         // Boca (base, virada p/ baixo) com rosca interna:
@@ -302,6 +345,9 @@ module femea() {
             translate([0, 0, -0.01])
                 cilindro_roscado(raio_crista_f, raio_raiz_f,
                                  recesso_prof, passo_rosca, larg_groove);
+            // Chanfro de guia na boca do recesso (z=0, aresta interna)
+            if (chanfro_on)
+                chanfro_boca_femea();
         }
     } else {
         // baioneta (futuro): boca com ranhuras em L, sem rosca
