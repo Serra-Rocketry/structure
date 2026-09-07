@@ -62,11 +62,15 @@ Para **facilitar o encontro e a inserção** na hora de encaixar (pedido do Ange
 - Parâmetros: `chanfro_on` (liga/desliga) e `chanfro_rosca` = 2 mm (45°).
 - ⚠️ Na fêmea o chanfro não pode passar da parede da boca (2,4 mm sem lábio; com lábio o aro continua com ~2,4 mm).
 
-## Imagens (v0.9 montado/explodido; detalhes e vistas v0.8 — geometria equivalente, geradas do STL real — CGAL)
+## Imagens (v0.9: montado/explodido/cortes; detalhes e vistas v0.8 — geometria equivalente, geradas do STL real — CGAL)
 
 Conjunto **montado** (macho laranja translúcido + fêmea azul rosqueada por cima, assentada no ombro) e **explodido** (fêmea separada acima) — dá pra ver a espiga do macho através da fêmea, a rosca em hélice real (perfil V 60°), os lábios de batente na junta e o chanfro na ponta do macho:
 
 ![Conjunto montado](media/acoplador-v09-montado.png) ![Conjunto explodido](media/acoplador-v09-explodido.png)
+
+Cortes axiais CGAL (export da diferença, não preview) mostrando o perfil V 60° — macho (dentes externos, flancos inclinados 30° da radial, mais finos na crista) e fêmea (rosca interna, vãos escuros entre dentes):
+
+![Corte axial macho](media/acoplador-v09-corte-macho.png) ![Corte axial fêmea](media/acoplador-v09-corte-femea.png)
 
 Detalhes do chanfro de guia — ponta do macho (bisel 45° na aresta do topo) e boca da fêmea (boca de sino na entrada do recesso):
 
