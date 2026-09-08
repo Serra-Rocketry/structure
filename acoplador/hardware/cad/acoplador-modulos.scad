@@ -1,5 +1,5 @@
 // ============================================================================
-// Acoplador de módulos — estrutura genérica Serra Rocketry (v0.10 — boss Ø16 uniforme corpo+espiga)
+// Acoplador de módulos — estrutura genérica Serra Rocketry (v0.11 — filete côncavo na base do boss)
 //
 // Dois anéis que se acoplam:
 //   - MACHO: espiga longa com rosca externa, entra quase no comprimento todo
@@ -71,6 +71,13 @@
 //     boss_d/2 - 0.5). M3: r=36 → boss outer 44 (0.5mm abaixo da raiz),
 //     rosca intacta, furo central na altura dos bosses Ø56 (era Ø64/Ø71).
 //     M4: r=35/Ø52, M5: r=34.25/Ø49. Removeu boss_esp_d (fim do Ø9).
+//   - v0.11: FILETE CÔNCAVO na base do boss (Angelo: transição abrupta onde o
+//     boss encontra a parede interna do furo). Como boss e furo são uniformes
+//     ao longo do eixo, o filete é feito no perfil 2D e extrudado: arco de
+//     raio boss_fil (3mm) tangente externamente ao círculo do boss e
+//     internamente ao círculo do furo, preenchendo o canto côncavo da costura
+//     (2 gussets por boss). Módulo boss_extrudado(); não toca a raiz da rosca
+//     nem o furo do tirante.
 // ============================================================================
 
 // ---------- CONFIG (editar aqui) ----------
@@ -124,6 +131,9 @@ pf_porca_h  = [ 2.4,       3.2,       4.0    ][parafuso_m - 3]; // altura da por
 // e a contagem.
 boss_d      = [16.0,      18.0,      19.5   ][parafuso_m - 3]; // Ø boss [mm] (corpo = espiga)
 parafuso_n  = 3;     // nº de tirantes (120° entre si)
+boss_fil    = 3.0;   // filete côncavo na BASE do boss (onde ele encontra a
+                     // parede interna do furo Ø80) — arco tangente ao círculo
+                     // do boss e ao círculo do furo, extrudado (v0.11). 0 desliga.
 
 // Rosca — QUADRADA, grossa e robusta (impressão FDM)
 // ⚠️ OpenSCAD: linear_extrude com twist só fecha a malha com NÚMERO INTEIRO
@@ -303,6 +313,69 @@ module cilindro_roscado(raio_crista, raio_raiz, alt, passo, groove_ax) {
         polygon(points = secao_pts);
 }
 
+// ---------------------------------------------------------------------------
+// FILETE NA BASE DO BOSS (v0.11) — suaviza a transição onde o boss Øboss_d
+// encontra a parede interna do furo Øfuro_interno.
+//
+// Como boss e furo são ambos uniformes ao longo do eixo, o filete é feito no
+// PERFIL 2D (seção transversal) e extrudado junto com o boss: um arco de
+// circunferência (raio `boss_fil`) tangente ao círculo do boss (externamente)
+// e ao círculo do furo (internamente), que preenche o canto côncavo da costura.
+//
+// Geometria (frame do eixo, furo centrado na origem, boss a +X):
+//   boss:  círculo raio b = boss_d/2, centro (c,0), c = boss_centro
+//   furo:  círculo raio R = furo_interno/2, centro (0,0)
+//   filete: círculo raio f = boss_fil, centro (xf, ±yf)
+//     xf = [c² - (b+f)² + (R-f)²] / (2c)   (tangente externa ao boss, interna ao furo)
+//     yf = sqrt((R-f)² - xf²)
+//   Cada "gusset" (material adicionado no canto) é o polígono limitado por:
+//     arco do filete  (do ponto de tangência no furo ao ponto de tangência no boss)
+//     arco do boss    (do ponto de tangência ao ombro = interseção boss×furo)
+//     arco do furo    (do ombro ao ponto de tangência)
+// ---------------------------------------------------------------------------
+function pts_arc_center(cx, cy, r, a0, a1, n) = [
+    for (i = [0:n])
+        let(a = a0 + (a1 - a0) * i / n)
+            [cx + r * cos(a), cy + r * sin(a)]
+];
+
+// Como pts_arc_center, mas pula o primeiro ponto (i=1..n) — p/ arcos que
+// continuam a partir do ponto final do arco anterior (sem duplicar vértice).
+function pts_arc_center_cont(cx, cy, r, a0, a1, n) = [
+    for (i = [1:n])
+        let(a = a0 + (a1 - a0) * i / n)
+            [cx + r * cos(a), cy + r * sin(a)]
+];
+
+function gusset_pts(sign) = let(
+    c = boss_centro, b = boss_d / 2, R = furo_interno / 2, f = boss_fil,
+    xf = (c*c - (b+f)*(b+f) + (R-f)*(R-f)) / (2*c),
+    yf = sign * sqrt(max(0, (R-f)*(R-f) - xf*xf)),
+    Sx = (R*R + c*c - b*b) / (2*c),
+    Sy = sign * sqrt(max(0, R*R - Sx*Sx)),
+    n  = 20
+) concat(
+    // arco do filete: tangência no furo → tangência no boss (centro (xf,yf))
+    pts_arc_center(xf, yf, f, atan2(yf, xf), atan2(-yf, c - xf), n),
+    // arco do boss: tangência → ombro (centro (c,0))
+    pts_arc_center_cont(c, 0, b, atan2(yf, xf - c), atan2(Sy, Sx - c), n),
+    // arco do furo: ombro → tangência (centro (0,0))
+    pts_arc_center_cont(0, 0, R, atan2(Sy, Sx), atan2(yf, xf), n)
+);
+
+// Boss com filete na base — secção (círculo + 2 gussets) extrudada em h.
+module boss_extrudado(h) {
+    linear_extrude(height = h, convexity = 10) {
+        union() {
+            translate([boss_centro, 0]) circle(d = boss_d, $fn = $fn_res);
+            if (boss_fil > 0) {
+                polygon(points = gusset_pts(1));
+                polygon(points = gusset_pts(-1));
+            }
+        }
+    }
+}
+
 module macho() {
     difference() {
         union() {
@@ -318,11 +391,11 @@ module macho() {
 
             // 3 bosses no CORPO (parede interna, a 120°) — engrossam p/ dentro
             // e dão material ao redor do furo do tirante na região colada.
+            // v0.11: filete côncavo na base onde o boss encontra o furo.
             for (i = [0:parafuso_n - 1]) {
                 ang = i * 360 / parafuso_n;
                 rotate([0, 0, ang])
-                    translate([boss_centro, 0, 0])
-                        cylinder(d = boss_d, h = comp_macho, $fn = $fn_res);
+                    boss_extrudado(comp_macho);
             }
 
             if (tipo_encaixe == "rosca") {
@@ -338,15 +411,12 @@ module macho() {
 
                 // Bosses na ESPIGA: continuação dos bosses do corpo até o topo
                 // da rosca (costuram as camadas da espiga). Mesmo Ø do corpo
-                // (v0.10); boss_centro foi movido p/ dentro p/ o boss não
-                // invadir a raiz da rosca (Ø89/2=44.5).
+                // (v0.10); v0.11: filete côncavo na base.
                 for (i = [0:parafuso_n - 1]) {
                     ang = i * 360 / parafuso_n;
                     rotate([0, 0, ang])
-                        translate([boss_centro, 0, comp_macho - 0.01])
-                            cylinder(d = boss_d,
-                                     h = espiga_comp + 0.01,
-                                     $fn = $fn_res);
+                        translate([0, 0, comp_macho - 0.01])
+                            boss_extrudado(espiga_comp + 0.01);
                 }
             }
             // TODO(baioneta): if (tipo_encaixe == "baioneta") { macho_baioneta(); }

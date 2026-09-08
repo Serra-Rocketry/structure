@@ -1,4 +1,4 @@
-# Acoplador de módulos — estrutura genérica Serra Rocketry (v0.10)
+# Acoplador de módulos — estrutura genérica Serra Rocketry (v0.11)
 
 Arquivo: `acoplador-modulos.scad` (OpenSCAD paramétrico)
 Status: rascunho validado geometricamente (malha watertight + encaixe do par sem interferência), **medidas ainda chutadas** — ajustar com as medidas reais dos tubos antes de imprimir.
@@ -107,6 +107,7 @@ Se uma camada tenta abrir/separar da vizinha, o parafuso impede o movimento.
 
 - **3 bosses (protuberâncias) na parede INTERNA**, a 120° entre si, do corpo até quase o topo da rosca. Engrossam a parede para dentro (não mudam o OD → não atrapalham a colagem no tubo) e dão material ao redor de cada parafuso.
 - **Desde a v0.10 o boss é Ø16 UNIFORME no corpo e na espiga** (pedido do Angelo: "não tem lógica uma parte mais fina"). Antes a espiga era Ø9 porque um boss Ø16 centrado no tirante (r=40) invadiria a raiz da rosca (Ø89/2=44,5). Para engordar o boss sem furar a rosca, o tirante+boss foi **movido para dentro**: `boss_centro`/`tirante_r` são derivados da raiz (`boss_centro = rosca_id/2 − boss_d/2 − 0,5`), então o lado externo do boss fica 0,5 mm abaixo da raiz e a rosca fica intacta.
+- **Desde a v0.11 o boss tem filete côncavo na base** (`boss_fil = 3` mm, paramétrico; 0 desliga): onde o boss encontra a parede interna do furo Ø80, a transição deixa de ser canto vivo. Como boss e furo são uniformes ao longo do eixo, o filete é um arco de circunferência feito no **perfil 2D** (tangente externamente ao círculo do boss e internamente ao círculo do furo, 2 gussets por boss) e extrudado junto — vira uma superfície contínua que suaviza a costura inteira, reduz a concentração de tensão e melhora a impressão FDM (evita o côncavo fino na raiz do boss). Não toca a raiz da rosca nem o furo do tirante.
 - **Parafuso atravessa corpo + espiga** (costura as camadas das duas regiões), parando ~2 mm antes do topo da rosca (`margem_topo`).
 - **Cabeça allen embutida no topo da espiga**, afundada (acabamento: nada fica saliente). Aperto com chave allen com a fêmea desrosqueada.
 - **Porca travada em bolsão hexagonal** na coroa inferior (embutida ~1 mm, `margem_fundo`). O bolsão hexagonal impede a porca de girar; o aperto é pela cabeça.
@@ -150,6 +151,7 @@ Desde a v0.10 o boss é Ø16 uniforme e o `boss_centro`/`tirante_r` são **deriv
 - **v0.8**: chanfro de guia 45° (2 mm paramétrico) no topo da rosca do macho (ponta da espiga) e na boca do recesso da fêmea (boca de sino) — facilita encontro/inserção.
 - **v0.9**: perfil **V 60°** (pedido do Angelo: quadrada com flanco 90° é difícil de imprimir) + **encaixe corrigido** — descoberto que desde o v0.3 o dente (55%) era maior que o vão (45%) e o par nunca rosquearia; rebalanceado p/ dente 14,5/vão 15,5; raiz da fêmea com sinal corrigido (+tol); piso plano no vão (malha fecha limpa); folga axial no fundo do recesso; validação de interferência do par criada (0,206 mm de folga mínima, zero penetração).
 - **v0.10**: boss **Ø16 uniforme** no corpo e na espiga (pedido do Angelo: "não tem lógica uma parte mais fina"). A espiga era Ø9 p/ não invadir a raiz da rosca; para engordar sem furar a rosca, tirante+boss movidos p/ dentro (`boss_centro`/`tirante_r` derivados da raiz = `rosca_id/2 − boss_d/2 − 0,5`). M3: tirante r=36, boss outer 44 (0,5 mm abaixo da raiz), rosca intacta; furo central na altura dos bosses cai de ~Ø64/Ø71 p/ Ø56. Removido `boss_esp_d` (fim do Ø9).
+- **v0.11**: filete **côncavo na base do boss** (pedido do Angelo: transição abrupta onde o boss encontra a parede interna do furo). Como boss e furo são uniformes ao longo do eixo, o filete é um arco (raio `boss_fil` = 3 mm, paramétrico) tangente externamente ao círculo do boss e internamente ao círculo do furo, feito no perfil 2D e extrudado (módulo `boss_extrudado()`). Suaviza a costura inteira, reduz concentração de tensão e melhora a impressão FDM; não toca a raiz da rosca nem o furo do tirante.
 
 ## Pendências
 
