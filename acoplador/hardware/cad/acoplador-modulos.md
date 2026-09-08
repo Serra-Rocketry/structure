@@ -1,4 +1,4 @@
-# Acoplador de módulos — estrutura genérica Serra Rocketry (v0.9)
+# Acoplador de módulos — estrutura genérica Serra Rocketry (v0.10)
 
 Arquivo: `acoplador-modulos.scad` (OpenSCAD paramétrico)
 Status: rascunho validado geometricamente (malha watertight + encaixe do par sem interferência), **medidas ainda chutadas** — ajustar com as medidas reais dos tubos antes de imprimir.
@@ -106,6 +106,7 @@ Se uma camada tenta abrir/separar da vizinha, o parafuso impede o movimento.
 ### Como ficou (detalhes construtivos)
 
 - **3 bosses (protuberâncias) na parede INTERNA**, a 120° entre si, do corpo até quase o topo da rosca. Engrossam a parede para dentro (não mudam o OD → não atrapalham a colagem no tubo) e dão material ao redor de cada parafuso.
+- **Desde a v0.10 o boss é Ø16 UNIFORME no corpo e na espiga** (pedido do Angelo: "não tem lógica uma parte mais fina"). Antes a espiga era Ø9 porque um boss Ø16 centrado no tirante (r=40) invadiria a raiz da rosca (Ø89/2=44,5). Para engordar o boss sem furar a rosca, o tirante+boss foi **movido para dentro**: `boss_centro`/`tirante_r` são derivados da raiz (`boss_centro = rosca_id/2 − boss_d/2 − 0,5`), então o lado externo do boss fica 0,5 mm abaixo da raiz e a rosca fica intacta.
 - **Parafuso atravessa corpo + espiga** (costura as camadas das duas regiões), parando ~2 mm antes do topo da rosca (`margem_topo`).
 - **Cabeça allen embutida no topo da espiga**, afundada (acabamento: nada fica saliente). Aperto com chave allen com a fêmea desrosqueada.
 - **Porca travada em bolsão hexagonal** na coroa inferior (embutida ~1 mm, `margem_fundo`). O bolsão hexagonal impede a porca de girar; o aperto é pela cabeça.
@@ -116,7 +117,7 @@ Se uma camada tenta abrir/separar da vizinha, o parafuso impede o movimento.
 
 `parafuso_m = 3` → troque para `4` (M4) ou `5` (M5) e o furo, cabeça, porca e boss se ajustam sozinhos (tabela no topo do arquivo).
 
-Nota M5: o rebaixo da cabeça (Ø 8,5 + folga) fica no limite do boss da espiga (que não pode invadir a raiz da rosca). Se for usar M5, aumentar `boss_esp_d` para ~10,2 (invade 0,2 mm da raiz localmente) ou aceitar rebaixo raso. M3/M4 ok.
+Desde a v0.10 o boss é Ø16 uniforme e o `boss_centro`/`tirante_r` são **derivados** da raiz da rosca (`boss_centro = rosca_id/2 − boss_d/2 − 0,5`), então trocar de M3 para M4/M5 move o tirante+boss automaticamente para dentro e **não invade a raiz** (M3: r=36, M4: r=35, M5: r=34,25). O furo central na altura dos bosses cai junto: M3 Ø56, M4 Ø52, M5 Ø49.
 
 ### Trade-offs aceitos
 
@@ -124,6 +125,8 @@ Nota M5: o rebaixo da cabeça (Ø 8,5 + folga) fica no limite do boss da espiga 
 |---|---|---|---|
 | Furo interno | 84 mm | 80 mm | dar parede (9,8 mm) p/ os parafusos e reforçar a raiz da rosca |
 | Furo central livre na altura dos bosses | — | ~64 mm (corpo) / ~71 mm (espiga) | os bosses protuberam p/ dentro; passagem continua folgada |
+
+> **v0.10**: com o boss Ø16 uniforme + tirante movido p/ dentro (r=36, M3), o furo central livre na altura dos bosses cai p/ **Ø56**. Confirme que ainda passa o que for necessário (hoje é só a chave allen longa).
 
 ---
 
@@ -146,6 +149,7 @@ Nota M5: o rebaixo da cabeça (Ø 8,5 + folga) fica no limite do boss da espiga 
 - **v0.7**: lábio de batente de colagem no macho (ombro) e na fêmea (boca do recesso); parede do tubo confirmada = 2 mm (ID 100 / OD 104).
 - **v0.8**: chanfro de guia 45° (2 mm paramétrico) no topo da rosca do macho (ponta da espiga) e na boca do recesso da fêmea (boca de sino) — facilita encontro/inserção.
 - **v0.9**: perfil **V 60°** (pedido do Angelo: quadrada com flanco 90° é difícil de imprimir) + **encaixe corrigido** — descoberto que desde o v0.3 o dente (55%) era maior que o vão (45%) e o par nunca rosquearia; rebalanceado p/ dente 14,5/vão 15,5; raiz da fêmea com sinal corrigido (+tol); piso plano no vão (malha fecha limpa); folga axial no fundo do recesso; validação de interferência do par criada (0,206 mm de folga mínima, zero penetração).
+- **v0.10**: boss **Ø16 uniforme** no corpo e na espiga (pedido do Angelo: "não tem lógica uma parte mais fina"). A espiga era Ø9 p/ não invadir a raiz da rosca; para engordar sem furar a rosca, tirante+boss movidos p/ dentro (`boss_centro`/`tirante_r` derivados da raiz = `rosca_id/2 − boss_d/2 − 0,5`). M3: tirante r=36, boss outer 44 (0,5 mm abaixo da raiz), rosca intacta; furo central na altura dos bosses cai de ~Ø64/Ø71 p/ Ø56. Removido `boss_esp_d` (fim do Ø9).
 
 ## Pendências
 

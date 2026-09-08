@@ -1,5 +1,5 @@
 // ============================================================================
-// Acoplador de módulos — estrutura genérica Serra Rocketry (v0.9 — rosca V 60° + encaixe corrigido)
+// Acoplador de módulos — estrutura genérica Serra Rocketry (v0.10 — boss Ø16 uniforme corpo+espiga)
 //
 // Dois anéis que se acoplam:
 //   - MACHO: espiga longa com rosca externa, entra quase no comprimento todo
@@ -63,6 +63,14 @@
 //     validação final por proximidade de malha na posição montada: sem
 //     penetração; distância mínima 0.206mm = folga projetada da ponta do
 //     dente da fêmea (r=45.0) ao início do flanco do macho (r=44.8).
+//   - v0.10: BOSS Ø16 UNIFORME no corpo E na espiga (Angelo: "não tem lógica
+//     uma parte mais fina"). A espiga era Ø9 p/ não invadir a raiz da rosca
+//     (Ø89/2=44.5); com boss Ø16 centrado no tirante (r=40) o lado externo
+//     iria a r=48, furando a rosca. Solução: mover tirante+boss p/ dentro —
+//     boss_centro/tirante_r derivados da raiz (boss_centro = rosca_id/2 -
+//     boss_d/2 - 0.5). M3: r=36 → boss outer 44 (0.5mm abaixo da raiz),
+//     rosca intacta, furo central na altura dos bosses Ø56 (era Ø64/Ø71).
+//     M4: r=35/Ø52, M5: r=34.25/Ø49. Removeu boss_esp_d (fim do Ø9).
 // ============================================================================
 
 // ---------- CONFIG (editar aqui) ----------
@@ -108,17 +116,14 @@ pf_cabeca_d = [ 5.5,       7.0,       8.5    ][parafuso_m - 3]; // Ø cabeça al
 pf_cabeca_h = [ 3.0,       4.0,       5.0    ][parafuso_m - 3]; // altura da cabeça
 pf_porca_s  = [ 5.5,       7.0,       8.0    ][parafuso_m - 3]; // porca across flats
 pf_porca_h  = [ 2.4,       3.2,       4.0    ][parafuso_m - 3]; // altura da porca
-// boss do CORPO: grosso (cabe a porca no bolsão da coroa inferior)
-boss_centro = 40.0;  // raio do centro do boss [mm] — na parede do furo (Ø80)
-boss_d      = [16.0,      18.0,      19.5   ][parafuso_m - 3]; // Ø boss no corpo [mm]
-// boss da ESPIGA: fino (não pode invadir a raiz da rosca Ø89/2=44.5)
-boss_esp_d  = [ 9.0,       9.0,       9.0    ][parafuso_m - 3]; // Ø boss na espiga [mm]
-tirante_r   = 40.0;  // raio do furo do tirante (= centro do boss) [mm]
+// boss do CORPO e da ESPIGA: MESMO diâmetro (v0.10 — Angelo: "não tem lógica
+// uma parte mais fina"). Antes a espiga era Ø9 p/ não invadir a raiz da rosca
+// (Ø89/2=44.5); com boss Ø16 centrado no tirante ele invadiria a rosca.
+// Solução (v0.10): mover tirante+boss p/ dentro — boss_centro/tirante_r são
+// DERIVADOS da raiz da rosca (ver bloco "rosca" abaixo). Aqui só o Ø do boss
+// e a contagem.
+boss_d      = [16.0,      18.0,      19.5   ][parafuso_m - 3]; // Ø boss [mm] (corpo = espiga)
 parafuso_n  = 3;     // nº de tirantes (120° entre si)
-// ⚠️ M5: cabeça Ø8.5+0.6 = 9.1 > boss_esp_d 9.0 — rebaixo no topo da espiga
-//    quase não fecha. Se for usar M5, aumentar boss_esp_d p/ ~10.2 (invade
-//    0.2mm a raiz da rosca localmente) ou aceitar rebaixo raso. M3/M4 ok.
-// (furo central livre: M3≈64 no corpo / ≈71 na espiga — avisar no changelog)
 
 // Rosca — QUADRADA, grossa e robusta (impressão FDM)
 // ⚠️ OpenSCAD: linear_extrude com twist só fecha a malha com NÚMERO INTEIRO
@@ -134,6 +139,16 @@ espiga_comp  = voltas_rosca * passo_rosca;  // comprimento rosqueado [mm]
 rosca_od     = 94;    // diâmetro de crista da rosca macho [mm]
 rosca_prof   = 2.5;   // profundidade radial do filete [mm]
 rosca_id     = rosca_od - 2 * rosca_prof;  // diâmetro de raiz (derivado) [mm]
+
+// Centro do boss / furo do tirante — derivado da raiz da rosca (v0.10):
+// o boss Øboss_d centrado no tirante não pode invadir a raiz da rosca
+// (rosca_id/2 = 44.5). boss_centro = rosca_id/2 - boss_d/2 - 0.5 → o lado
+// externo do boss fica 0.5mm ABAIXO da raiz e não toca a rosca.
+//   M3: 44.5 - 8.0  - 0.5 = 36.0  → boss outer 44.0, furo central Ø56
+//   M4: 44.5 - 9.0  - 0.5 = 35.0  → furo central Ø52
+//   M5: 44.5 - 9.75 - 0.5 = 34.25 → furo central Ø49
+boss_centro = rosca_id / 2 - boss_d / 2 - 0.5;
+tirante_r   = boss_centro;
 // v0.9: VÃO (largura axial do groove no RAIO MÉDIO) = 15.5 → DENTE 14.5.
 // Antes era 0.45×passo = 13.5 (dente 16.5 > vão 13.5 = IMPOSSÍVEL de rosquear).
 larg_groove  = passo_rosca * 0.5167;  // vão no raio médio [mm] (=15.5)
@@ -322,13 +337,14 @@ module macho() {
                     }
 
                 // Bosses na ESPIGA: continuação dos bosses do corpo até o topo
-                // da rosca (costuram as camadas da espiga). Finos (Ø 9) p/ não
-                // invadir a raiz da rosca (Ø89 → raio 44.5).
+                // da rosca (costuram as camadas da espiga). Mesmo Ø do corpo
+                // (v0.10); boss_centro foi movido p/ dentro p/ o boss não
+                // invadir a raiz da rosca (Ø89/2=44.5).
                 for (i = [0:parafuso_n - 1]) {
                     ang = i * 360 / parafuso_n;
                     rotate([0, 0, ang])
                         translate([boss_centro, 0, comp_macho - 0.01])
-                            cylinder(d = boss_esp_d,
+                            cylinder(d = boss_d,
                                      h = espiga_comp + 0.01,
                                      $fn = $fn_res);
                 }
